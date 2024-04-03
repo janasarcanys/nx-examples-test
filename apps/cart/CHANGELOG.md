@@ -2,6 +2,19 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.0-alpha.4](https://github.com/janasarcanys/nx-examples-test/compare/cart-0.1.0-alpha.3...cart-0.1.0-alpha.4) (2024-04-03)
+
+
+### Features
+
+* updated title for cart ([ae8e7a7](https://github.com/janasarcanys/nx-examples-test/commit/ae8e7a7b5003a6d62f4cfab73e525193fc13c4fb))
+
+
+### Bug Fixes
+
+* fix for title ([50a82b2](https://github.com/janasarcanys/nx-examples-test/commit/50a82b2280c6e153e93d3f43a5d4298f2409dc38))
+* spaces fix ([ed3c038](https://github.com/janasarcanys/nx-examples-test/commit/ed3c0380d019334fb16df7da015b6926f54a4442))
+
 ## [0.1.0-alpha.3](https://github.com/janasarcanys/nx-examples-test/compare/cart-0.1.0-alpha.2...cart-0.1.0-alpha.3) (2024-03-07)
 
 ## [0.1.0-alpha.2](https://github.com/janasarcanys/nx-examples-test/compare/cart-0.1.0-alpha.1...cart-0.1.0-alpha.2) (2024-03-07)
