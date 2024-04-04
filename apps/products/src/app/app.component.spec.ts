@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;
 
-  //added comment 2
+  //added comment 3
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
