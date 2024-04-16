@@ -40,7 +40,7 @@ jobs:
         id: current_version_cart_2
         run: |
           ls -lh
-          cat ./dist/apps/cart/package.json | jq -r '.version'
+          echo "test=cat ./dist/apps/cart/package.json | jq -r '.version'" >> $GITHUB_OUTPUT 
 
       - name: Version
         run: npx nx affected --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='master' --syncVersions=true
