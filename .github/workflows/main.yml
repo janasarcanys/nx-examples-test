@@ -3,6 +3,10 @@ name: release
 on:
   - workflow_dispatch
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -14,15 +18,6 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - name: Setup Git
-        run: |
-          git config user.name "GitHub Bot"
-          git config user.email "gituser@example.com"
-      - run: npm install --legacy-peer-deps
-      - name: Version
-        run: npx nx affected --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='master' --syncVersions=true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build nx
         run: npx nx run cart:build --configuration=production 
@@ -36,6 +31,17 @@ jobs:
 
       - name: print version
         run: echo ${{ steps.current_version_cart.outputs.version }} 
+      - name: Setup Git
+        run: |
+          git config user.name "GitHub Bot"
+          git config user.email "gituser@example.com"
+      - run: npm install --legacy-peer-deps
+      - name: Version
+        run: npx nx affected --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='master' --syncVersions=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
