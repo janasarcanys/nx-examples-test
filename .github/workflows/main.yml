@@ -29,10 +29,13 @@ jobs:
 
       - name: Get Current version
         id: current_version_cart
-        run: echo "version=cat ./dist/apps/cart/package.json | jq -r '.version'" >> $GITHUB_OUTPUT 
+        run: |
+          ls -lh
+          cat ./dist/apps/cart/package.json | jq -r '.version'
+      #echo "version=cat ./dist/apps/cart/package.json | jq -r '.version'" >> $GITHUB_OUTPUT 
 
-      - name: print version
-        run: echo ${{ steps.current_version_cart.outputs.version }} 
+      # - name: print version
+      #   run: echo ${{ steps.current_version_cart.outputs.version }} 
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
