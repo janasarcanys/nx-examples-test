@@ -35,7 +35,8 @@
         ],
         "scripts": [],
         "buildLibsFromSource": true,
-        "isolatedConfig": true
+        "isolatedConfig": true,
+        "generatePackageJson": true
       },
       "configurations": {
         "production": {
