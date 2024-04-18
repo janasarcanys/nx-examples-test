@@ -51,6 +51,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Merge branch
+        run: |
+          git checkout master
+          git merge --no-ff ${{ GITHUB_REF }}
+          git push origin master
 
         
 
