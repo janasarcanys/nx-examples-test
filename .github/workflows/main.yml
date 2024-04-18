@@ -11,10 +11,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          # required
+          app-id: ${{ vars.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.ANAS_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -38,12 +44,7 @@ jobs:
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
 
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          # required
-          app-id: ${{ vars.BOT_ID }}
-          private-key: ${{ secrets.BOT_KEY }}
+
 
       - name: Version
         run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
