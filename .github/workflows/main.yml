@@ -37,12 +37,12 @@ jobs:
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
 
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          # required
-          app-id: ${{ vars.BOTAPP_ID }}
-          private-key: ${{ secrets.BOTAPP_PRIVATE_KEY }}
+      # - uses: actions/create-github-app-token@v1
+      #   id: app-token
+      #   with:
+      #     # required
+      #     app-id: ${{ vars.BOTAPP_ID }}
+      #     private-key: ${{ secrets.BOTAPP_PRIVATE_KEY }}
 
       - name: Version
         run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
