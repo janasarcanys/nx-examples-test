@@ -2,6 +2,17 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.0-alpha.4](https://github.com/janasarcanys/nx-examples-test/compare/v0.1.0-alpha.3...v0.1.0-alpha.4) (2024-04-18)
+
+
+### Features
+
+* 2 ([b2a6174](https://github.com/janasarcanys/nx-examples-test/commit/b2a617449977bbac7e633e1f275c8b9cf13cb6fc))
+* added index ([df47b18](https://github.com/janasarcanys/nx-examples-test/commit/df47b18439613042ef8a5fcf29a1bc1e4e250831))
+* cart update ([8f03d08](https://github.com/janasarcanys/nx-examples-test/commit/8f03d08ab339cddee748669b4f3e60771089b10d))
+* new title ([14efe09](https://github.com/janasarcanys/nx-examples-test/commit/14efe09a4326f989dd62d0f47d69e6be798f88d1))
+* updated token ([669d458](https://github.com/janasarcanys/nx-examples-test/commit/669d4581e59595dfe1478554ba07000f98a724ca))
+
 ## [0.1.0-alpha.3](https://github.com/janasarcanys/nx-examples-test/compare/v0.1.0-alpha.2...v0.1.0-alpha.3) (2024-04-16)
 
 
