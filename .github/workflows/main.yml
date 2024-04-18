@@ -41,7 +41,7 @@ jobs:
       - name: Version
         run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.anastoken }}
 
 
       - name: Get Current version 2
