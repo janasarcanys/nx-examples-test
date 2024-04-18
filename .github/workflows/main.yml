@@ -14,7 +14,6 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ secrets.anastoken }}
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -48,7 +47,7 @@ jobs:
       - name: Version
         run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
         env:
-          GITHUB_TOKEN: ${{ secrets.anastoken }}
+          GITHUB_TOKEN: ${{ secrets.ANAS_PAT }}
 
 #${{ steps.app-token.outputs.token }}
 
