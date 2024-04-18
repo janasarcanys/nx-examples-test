@@ -38,25 +38,25 @@ jobs:
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
 
-      # - uses: actions/create-github-app-token@v1
-      #   id: app-token
-      #   with:
-      #     # required
-      #     app-id: ${{ vars.BOTAPP_ID }}
-      #     private-key: ${{ secrets.BOTAPP_PRIVATE_KEY }}
+      - uses: actions/create-github-app-token@v1
+        id: app-token
+        with:
+          # required
+          app-id: ${{ vars.BOT_ID }}
+          private-key: ${{ secrets.BOT_KEY }}
 
       - name: Version
         run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --releaseAs=prerelease --preid=alpha --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
         env:
-          GITHUB_TOKEN: ${{ secrets.ANAS_PAT }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
 
 #${{ steps.app-token.outputs.token }}
 
-      - name: Get Current version 2
+      - name: Get Updated version 
         id: current_version_cart_2
         run: |
           ls -lh
-          echo "test=$(cat ./dist/apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
+          echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
 
       - name: print version 2
         run: echo ${{ steps.current_version_cart_2.outputs.test }} 
@@ -70,7 +70,7 @@ jobs:
       - name: create pull request
         run: gh pr create -B master -H ${{github.ref_name }} --title 'Merge ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
