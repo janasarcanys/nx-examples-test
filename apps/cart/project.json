@@ -100,7 +100,7 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventionalcommits",
-        "baseBranch": "master"
+        "commitMessageFormat": "release: bump version to {version} [skip ci]"
       }
     }
   },
