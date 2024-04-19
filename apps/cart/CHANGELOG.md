@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.1.0-alpha.6](https://github.com/janasarcanys/nx-examples-test/compare/v0.1.0-alpha.5...v0.1.0-alpha.6) (2024-04-19)
+
+
+### Features
+
+* cjanged token ([550f8bb](https://github.com/janasarcanys/nx-examples-test/commit/550f8bb826b33c1d80048eda2a1ef3fe1bc4803b))
+* test feat ([4fc114b](https://github.com/janasarcanys/nx-examples-test/commit/4fc114be69837d31e5ac0fcdf319cb24126a35ce))
+
 ## [0.1.0-alpha.5](https://github.com/janasarcanys/nx-examples-test/compare/v0.1.0-alpha.4...v0.1.0-alpha.5) (2024-04-18)
 
 
