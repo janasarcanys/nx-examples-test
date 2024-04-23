@@ -62,16 +62,18 @@ jobs:
       - name: print version 2
         run: echo ${{ steps.current_version_cart_2.outputs.test }} 
 
-      # - name: Merge branch
-      #   run: |
-      #     git checkout master
-      #     git merge --no-ff ${{ github.ref }}
-      #     git push origin master
-
-      - name: create pull request
-        run: gh pr create -B master -H ${{github.ref_name }} --title 'Merge ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
+      - name: Merge branch
+        run: |
+          git checkout master
+          git merge --no-ff ${{ github.ref }}
+          git push origin master
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      # - name: create pull request
+      #   run: gh pr create -B master -H ${{github.ref_name }} --title 'Merge ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
+      #   env:
+      #     GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
