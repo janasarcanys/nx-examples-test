@@ -100,7 +100,8 @@
     "version": {
       "executor": "@jscutlery/semver:version",
       "options": {
-        "preset": "conventionalcommits"
+        "preset": "conventionalcommits",
+        "commitMessageFormat": "chore: bump version to {version} [skip ci]"
       }
     }
   },
