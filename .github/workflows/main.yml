@@ -47,6 +47,10 @@ jobs:
         id: latest_commit_SHA
         run: echo "commitsha=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT 
 
+      - name: Get SHORT Commit SHA
+        id: short_sha
+        run: echo "shortsha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT 
+      
       # - name: Merge branch
       #   run: |
       #     git checkout master
@@ -60,19 +64,19 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         with:
-          branch: 'refs/heads/release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc'
+          branch: 'refs/heads/release/${{ steps.short_sha.outputs.shortsha }}-rc'
           sha: '${{ steps.latest_commit_SHA.outputs.commitsha }}'
 
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: 'release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc'
+          ref: 'release/${{ steps.short_sha.outputs.shortsha }}-rc'
       - run: npm install --legacy-peer-deps
       - name: Build nx
         run: npx nx run cart:build --configuration=production 
 
       - name: Version
-        run: npx nx affected --base='${{ steps.latest_commit_SHA.outputs.commitsha }}-rc~1' --head='release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc' --syncVersions=true
+        run: npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -86,12 +90,12 @@ jobs:
         run: echo ${{ steps.updated_version.outputs.test }} 
 
       - name: Create pull request for main
-        run: gh pr create -B master -H 'release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to master.' --body 'Created by Github action'
+        run: gh pr create -B master -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to master.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request for develop
-        run: gh pr create -B develop -H 'release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
+        run: gh pr create -B develop -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
