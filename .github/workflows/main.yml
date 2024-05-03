@@ -98,6 +98,7 @@ jobs:
         run: gh pr create -B develop -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
