@@ -2,6 +2,8 @@ name: Tag Push
 
 on:
   push:
+    branches:
+      - "master"
     tags:
       - "v*.*.*"
 
@@ -16,3 +18,11 @@ jobs:
         run: |
           echo DO SOMETHING WITH PUSH
           echo deploying tag
+
+      - name: Get Commit SHA
+        id: latest_commit_SHA
+        run: echo "commitsha=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT 
+
+      - name: Get SHORT Commit SHA
+        id: short_sha
+        run: echo "shortsha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT 
