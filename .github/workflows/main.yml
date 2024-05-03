@@ -43,14 +43,6 @@ jobs:
         run: |
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
-
-
-
-      - name: Version
-        run: npx nx affected --base=${{github.ref_name }}~1 --head=${{github.ref_name }} --parallel=1 --target version --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-
 #${{ steps.app-token.outputs.token }}
 
       - name: Get Updated version 
@@ -82,8 +74,18 @@ jobs:
           branch: 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}'
           sha: '${{ steps.latest_commit_SHA.outputs.commitsha }}'
 
-      - name: create pull request
+      - name: Version
+        run: npx nx affected --base=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}~1 --head=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }} --parallel=1 --target version --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Create pull request for main
         run: gh pr create -B master -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+
+      - name: Create pull request for develop
+        run: gh pr create -B develop -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to develop.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
         
