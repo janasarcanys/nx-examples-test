@@ -11,33 +11,31 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          # required
-          app-id: ${{ vars.BOT_ID }}
-          private-key: ${{ secrets.BOT_KEY }}
+      # - uses: actions/create-github-app-token@v1
+      #   id: app-token
+      #   with:
+      #     # required
+      #     app-id: ${{ vars.BOT_ID }}
+      #     private-key: ${{ secrets.BOT_KEY }}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - run: npm install --legacy-peer-deps
-      - name: Build nx
-        run: npx nx run cart:build --configuration=production 
 
-      - name: Get Current version
-        id: current_version_cart
-        run: |
-          ls -lh
-          version_act=test_version
-          echo "version=$version_act" >> $GITHUB_OUTPUT 
 
-      - name: print version
-        run: echo ${{ steps.current_version_cart.outputs.version }} 
+      # - name: Get Current version
+      #   id: current_version_cart
+      #   run: |
+      #     ls -lh
+      #     version_act=test_version
+      #     echo "version=$version_act" >> $GITHUB_OUTPUT 
+
+      # - name: print version
+      #   run: echo ${{ steps.current_version_cart.outputs.version }} 
 
       - name: Setup Git
         run: |
@@ -45,19 +43,14 @@ jobs:
           git config user.email "gituser@example.com"
 #${{ steps.app-token.outputs.token }}
 
-      - name: Get Updated version 
-        id: current_version_cart_2
-        run: |
-          ls -lh
-          echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
-
-      - name: print version 2
-        run: echo ${{ steps.current_version_cart_2.outputs.test }} 
-
       - name: Get Commit SHA
         id: latest_commit_SHA
         run: echo "commitsha=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT 
 
+      - name: Get SHORT Commit SHA
+        id: short_sha
+        run: echo "shortsha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT 
+      
       # - name: Merge branch
       #   run: |
       #     git checkout master
@@ -69,25 +62,43 @@ jobs:
       - name: Create Release Candidate Branch
         uses: peterjgrainger/action-create-branch@v2.2.0
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         with:
-          branch: 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}'
+          branch: 'refs/heads/release/${{ steps.short_sha.outputs.shortsha }}-rc'
           sha: '${{ steps.latest_commit_SHA.outputs.commitsha }}'
 
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: 'release/${{ steps.short_sha.outputs.shortsha }}-rc'
+      - run: npm install --legacy-peer-deps
+      - name: Build nx
+        run: npx nx run cart:build --configuration=production 
+
       - name: Version
-        run: npx nx affected --base=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}~1 --head=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }} --parallel=1 --target version --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
+        run: npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get Updated version 
+        id: updated_version
+        run: |
+          ls -lh
+          echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
+
+      - name: print version 2
+        run: echo ${{ steps.updated_version.outputs.test }} 
 
       - name: Create pull request for main
-        run: gh pr create -B master -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
+        run: gh pr create -B master -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to master.' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request for develop
-        run: gh pr create -B develop -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to develop.' --body 'Created by Github action'
+        run: gh pr create -B develop -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
