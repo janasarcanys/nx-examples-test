@@ -11,16 +11,16 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/create-github-app-token@v1
-        id: app-token
-        with:
-          # required
-          app-id: ${{ vars.BOT_ID }}
-          private-key: ${{ secrets.BOT_KEY }}
+      # - uses: actions/create-github-app-token@v1
+      #   id: app-token
+      #   with:
+      #     # required
+      #     app-id: ${{ vars.BOT_ID }}
+      #     private-key: ${{ secrets.BOT_KEY }}
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -74,20 +74,25 @@ jobs:
           branch: 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}'
           sha: '${{ steps.latest_commit_SHA.outputs.commitsha }}'
 
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: 'release/${{ steps.current_version_cart_2.outputs.test }}'
+
       - name: Version
-        run: npx nx affected --base=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}~1 --head=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }} --parallel=1 --target version --push=true --baseBranch='${{github.ref_name }}' --syncVersions=true
+        run: npx nx affected --base=release/${{ steps.current_version_cart_2.outputs.test }}~1 --head=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }} --parallel=1 --target version --push=true --baseBranch='release/${{ steps.current_version_cart_2.outputs.test }}' --syncVersions=true
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request for main
         run: gh pr create -B master -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request for develop
         run: gh pr create -B develop -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to develop.' --body 'Created by Github action'
         env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
