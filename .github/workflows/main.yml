@@ -25,34 +25,23 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16'
-      - run: npm install --legacy-peer-deps
-      - name: Build nx
-        run: npx nx run cart:build --configuration=production 
 
-      - name: Get Current version
-        id: current_version_cart
-        run: |
-          ls -lh
-          version_act=test_version
-          echo "version=$version_act" >> $GITHUB_OUTPUT 
 
-      - name: print version
-        run: echo ${{ steps.current_version_cart.outputs.version }} 
+      # - name: Get Current version
+      #   id: current_version_cart
+      #   run: |
+      #     ls -lh
+      #     version_act=test_version
+      #     echo "version=$version_act" >> $GITHUB_OUTPUT 
+
+      # - name: print version
+      #   run: echo ${{ steps.current_version_cart.outputs.version }} 
 
       - name: Setup Git
         run: |
           git config user.name "GitHub Bot"
           git config user.email "gituser@example.com"
 #${{ steps.app-token.outputs.token }}
-
-      - name: Get Updated version 
-        id: current_version_cart_2
-        run: |
-          ls -lh
-          echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
-
-      - name: print version 2
-        run: echo ${{ steps.current_version_cart_2.outputs.test }} 
 
       - name: Get Commit SHA
         id: latest_commit_SHA
@@ -71,26 +60,38 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
         with:
-          branch: 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}'
+          branch: 'refs/heads/release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc'
           sha: '${{ steps.latest_commit_SHA.outputs.commitsha }}'
 
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          ref: 'release/${{ steps.current_version_cart_2.outputs.test }}'
+          ref: 'release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc'
+      - run: npm install --legacy-peer-deps
+      - name: Build nx
+        run: npx nx run cart:build --configuration=production 
 
       - name: Version
-        run: npx nx affected --base=release/${{ steps.current_version_cart_2.outputs.test }}~1 --head=refs/heads/release/${{ steps.current_version_cart_2.outputs.test }} --parallel=1 --target version --push=true --baseBranch='release/${{ steps.current_version_cart_2.outputs.test }}' --syncVersions=true
+        run: npx nx affected --base=release/${{ release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc }}~1 --head=refs/heads/release/${{ release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc }} --parallel=1 --target version --push=true --baseBranch='release/${{ release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc }}' --syncVersions=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Get Updated version 
+        id: updated_version
+        run: |
+          ls -lh
+          echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
+
+      - name: print version 2
+        run: echo ${{ steps.updated_version.outputs.test }} 
+
       - name: Create pull request for main
-        run: gh pr create -B master -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to master.' --body 'Created by Github action'
+        run: gh pr create -B master -H 'refs/heads/release/${{ release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc }}' --title 'Merge release ${{ steps.updated_version.outputs.test }} to master.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create pull request for develop
-        run: gh pr create -B develop -H 'refs/heads/release/${{ steps.current_version_cart_2.outputs.test }}' --title 'Merge release ${{ steps.current_version_cart_2.outputs.test }} to develop.' --body 'Created by Github action'
+        run: gh pr create -B develop -H 'refs/heads/release/${{ release/${{ steps.latest_commit_SHA.outputs.commitsha }}-rc }}' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         
