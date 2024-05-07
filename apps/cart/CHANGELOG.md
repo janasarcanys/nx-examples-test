@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/janasarcanys/nx-examples-test/compare/v0.1.0...v0.2.0) (2024-05-07)
+
+
+### Features
+
+* new title ([e5e47a7](https://github.com/janasarcanys/nx-examples-test/commit/e5e47a7fa10cac77e74e4eb2e0e3bb1465be230f))
+
 ## [0.1.0](https://github.com/janasarcanys/nx-examples-test/compare/v0.0.1...v0.1.0) (2024-05-03)
 
 
