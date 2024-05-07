@@ -76,6 +76,7 @@ jobs:
         run: npx nx run cart:build --configuration=production 
 
       - name: Version
+        id: versioning
         run: npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,19 +86,23 @@ jobs:
         run: |
           ls -lh
           echo "test=$(cat ./apps/cart/package.json | jq -r '.version')" >> $GITHUB_OUTPUT 
+        if: steps.versioning.outcome == 'success'
 
-      - name: print version 2
+      - name: print Updated version 
         run: echo ${{ steps.updated_version.outputs.test }} 
+        if: steps.versioning.outcome == 'success'
 
       - name: Create pull request for main
         run: gh pr create -B master -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to master.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.versioning.outcome == 'success'
 
       - name: Create pull request for develop
         run: gh pr create -B develop -H 'release/${{ steps.short_sha.outputs.shortsha }}-rc' --title 'Merge release ${{ steps.updated_version.outputs.test }} to develop.' --body 'Created by Github action'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.versioning.outcome == 'success'
         
 
 #npx nx run cart:version --releaseAs=prerelease --preid=alpha --push=true
