@@ -21,8 +21,8 @@ jobs:
 
       - name: Get Commit SHA
         id: latest_commit_SHA
-        run: echo "commitsha=$(git rev-parse --verify HEAD)" >> $GITHUB_OUTPUT 
+        run: echo "$(git rev-parse --verify HEAD)"
 
       - name: Get SHORT Commit SHA
         id: short_sha
-        run: echo "shortsha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT 
+        run: echo "$(git rev-parse --short HEAD)"
