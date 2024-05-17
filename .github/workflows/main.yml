@@ -87,7 +87,7 @@ jobs:
       - name: Version
         id: versioning
         run: |
-          npx nx run workspace:version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc'
+          npx nx run nx-example:version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc'
       #npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
