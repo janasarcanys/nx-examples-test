@@ -86,7 +86,9 @@ jobs:
 
       - name: Version
         id: versioning
-        run: npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
+        run: |
+          nx run workspace:version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc'
+      #npx nx affected --base='release/${{ steps.short_sha.outputs.shortsha }}-rc~1' --head='release/${{ steps.short_sha.outputs.shortsha }}-rc' --parallel=1 --target version --push=true --baseBranch='release/${{ steps.short_sha.outputs.shortsha }}-rc' --syncVersions=true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: contains(steps.affected_projects.outputs.affected, 'cart') || contains(steps.affected_projects.outputs.affected, 'product') 
